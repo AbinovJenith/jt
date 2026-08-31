@@ -1,0 +1,198 @@
+### Jothi Traders API — Quick Tests
+### Install "REST Client" extension, then click "Send Request" above each line
+
+@baseUrl = http://localhost:4000/api/v1
+@token = PASTE_ACCESS_TOKEN_HERE
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AUTH
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Login (copy accessToken from response → paste into @token above)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@jothitraders.com",
+  "password": "Admin@123"
+}
+
+###  Get current user
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CATEGORIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+### List all categories
+GET {{baseUrl}}/categories
+
+### Create category
+POST {{baseUrl}}/categories
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Industrial Products",
+  "description": "Heavy industrial machinery and parts"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PRODUCTS
+# ─────────────────────────────────────────────────────────────────────────────
+
+### List products (page 1)
+GET {{baseUrl}}/products?page=1&limit=10
+
+### Search products
+GET {{baseUrl}}/products?search=LED
+
+### Create product
+POST {{baseUrl}}/products
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "LED Tube Light 20W",
+  "categoryId": "PASTE_CATEGORY_ID",
+  "description": "Energy-efficient fluorescent tube replacement",
+  "variants": [
+    {
+      "sku": "LED-TUBE-20W-CW",
+      "name": "20W Cool White"
+    }
+  ]
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CUSTOMERS
+# ─────────────────────────────────────────────────────────────────────────────
+
+### List customers
+GET {{baseUrl}}/customers
+Authorization: Bearer {{token}}
+
+### Create customer
+POST {{baseUrl}}/customers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "companyName": "Acme Industries Pvt Ltd",
+  "contactName": "Ramesh Iyer",
+  "email": "purchase@acmeindustries.in",
+  "phone": "+91 98888 77777",
+  "gstNumber": "33AABCA1234B1Z1",
+  "creditLimit": 200000,
+  "creditTerms": 30
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SUPPLIERS
+# ─────────────────────────────────────────────────────────────────────────────
+
+### List suppliers
+GET {{baseUrl}}/suppliers
+Authorization: Bearer {{token}}
+
+### Create supplier
+POST {{baseUrl}}/suppliers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "companyName": "BrightLight Electricals",
+  "contactName": "Suresh Kumar",
+  "email": "sales@brightlight.in",
+  "phone": "+91 97777 66666",
+  "gstNumber": "29AABCB5678C1Z3"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# RFQ WORKFLOW
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Create RFQ
+POST {{baseUrl}}/rfq
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customerId": "PASTE_CUSTOMER_ID",
+  "notes": "Urgent requirement for factory expansion",
+  "items": [
+    { "variantId": "PASTE_VARIANT_ID", "qty": 500, "notes": "B22 base preferred" }
+  ]
+}
+
+### Submit RFQ
+PATCH {{baseUrl}}/rfq/PASTE_RFQ_ID/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "status": "SUBMITTED" }
+
+### Create Quotation from RFQ
+POST {{baseUrl}}/quotations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "rfqId": "PASTE_RFQ_ID",
+  "validUntil": "2026-09-30",
+  "notes": "Prices valid for 30 days",
+  "termsConditions": "50% advance, 50% on delivery",
+  "items": [
+    {
+      "variantId": "PASTE_VARIANT_ID",
+      "qty": 500,
+      "unitPrice": 52.00,
+      "discount": 5,
+      "gstRate": 18
+    }
+  ]
+}
+
+### Accept Quotation
+PATCH {{baseUrl}}/quotations/PASTE_QUOTATION_ID/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "status": "ACCEPTED" }
+
+### Convert to Order
+POST {{baseUrl}}/quotations/PASTE_QUOTATION_ID/convert-to-order
+Authorization: Bearer {{token}}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# INVENTORY
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Get stock levels
+GET {{baseUrl}}/inventory
+Authorization: Bearer {{token}}
+
+### Adjust stock
+PATCH {{baseUrl}}/inventory/adjust
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "variantId": "PASTE_VARIANT_ID",
+  "warehouseId": "PASTE_WAREHOUSE_ID",
+  "qty": 100,
+  "operation": "ADD"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DASHBOARD
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Dashboard summary
+GET {{baseUrl}}/dashboard
+Authorization: Bearer {{token}}
+
+### Revenue chart
+GET {{baseUrl}}/dashboard/revenue-chart?months=6
+Authorization: Bearer {{token}}

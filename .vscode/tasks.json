@@ -1,0 +1,123 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // ── Dev servers ───────────────────────────────────────────────────────────
+    {
+      "label": "Start: All (API + Web)",
+      "type": "shell",
+      "command": "pnpm dev",
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "new" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start: API only",
+      "type": "shell",
+      "command": "pnpm --filter api dev",
+      "presentation": { "reveal": "always", "panel": "new" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start: Web only",
+      "type": "shell",
+      "command": "pnpm --filter web dev",
+      "presentation": { "reveal": "always", "panel": "new" },
+      "problemMatcher": []
+    },
+
+    // ── Database ──────────────────────────────────────────────────────────────
+    {
+      "label": "DB: Start PostgreSQL (Docker)",
+      "type": "shell",
+      "command": "docker compose up postgres -d",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "DB: Stop PostgreSQL (Docker)",
+      "type": "shell",
+      "command": "docker compose stop postgres",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "DB: Generate Prisma Client",
+      "type": "shell",
+      "command": "pnpm db:generate",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "DB: Run Migrations",
+      "type": "shell",
+      "command": "pnpm db:migrate",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "DB: Open Prisma Studio",
+      "type": "shell",
+      "command": "pnpm db:studio",
+      "presentation": { "reveal": "always", "panel": "new" },
+      "problemMatcher": []
+    },
+    {
+      "label": "DB: Seed",
+      "type": "shell",
+      "command": "pnpm --filter api exec ts-node prisma/seed.ts",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+
+    // ── Code quality ──────────────────────────────────────────────────────────
+    {
+      "label": "Lint: All",
+      "type": "shell",
+      "command": "pnpm lint",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Typecheck: All",
+      "type": "shell",
+      "command": "pnpm typecheck",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Test: All",
+      "type": "shell",
+      "command": "pnpm test",
+      "group": { "kind": "test", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+
+    // ── Install ───────────────────────────────────────────────────────────────
+    {
+      "label": "Install: Dependencies",
+      "type": "shell",
+      "command": "pnpm install",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+
+    // ── Docker ────────────────────────────────────────────────────────────────
+    {
+      "label": "Docker: Start all services",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Stop all services",
+      "type": "shell",
+      "command": "docker compose down",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ── NestJS API (debug mode) ────────────────────────────────────────────────
+    {
+      "name": "API: Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "api", "run", "dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "envFile": "${workspaceFolder}/.env",
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    },
+
+    // ── Attach to running NestJS process ──────────────────────────────────────
+    {
+      "name": "API: Attach",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    },
+
+    // ── Next.js frontend ──────────────────────────────────────────────────────
+    {
+      "name": "Web: Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "web", "run", "dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Local:.*http://localhost:([0-9]+)",
+        "uriFormat": "http://localhost:%s"
+      }
+    },
+
+    // ── Jest tests (API) ──────────────────────────────────────────────────────
+    {
+      "name": "API: Test (current file)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter", "api",
+        "run", "test",
+        "--",
+        "--testPathPattern", "${fileBasenameNoExtension}",
+        "--no-coverage"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+
+  "compounds": [
+    {
+      "name": "Full Stack (API + Web)",
+      "configurations": ["API: Debug", "Web: Debug"],
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "recommendations": [
+    // TypeScript & JavaScript
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-next",
+
+    // Prisma
+    "Prisma.prisma",
+
+    // Tailwind CSS
+    "bradlc.vscode-tailwindcss",
+
+    // NestJS
+    "ashinzekene.nestjs",
+
+    // REST client (test APIs inline)
+    "humao.rest-client",
+
+    // Git
+    "eamodio.gitlens",
+
+    // Error highlighting inline
+    "usernamehw.errorlens",
+
+    // Auto import paths
+    "christian-kohler.path-intellisense",
+
+    // Bracket colorization
+    "oderwat.indent-rainbow",
+
+    // Docker
+    "ms-azuretools.vscode-docker",
+
+    // dotenv syntax highlighting
+    "mikestead.dotenv",
+
+    // Auto-rename paired HTML/JSX tags
+    "formulahendry.auto-rename-tag"
+  ]
+}

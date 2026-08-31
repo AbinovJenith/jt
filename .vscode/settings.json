@@ -1,0 +1,103 @@
+{
+  // ── Editor ──────────────────────────────────────────────────────────────────
+  "editor.fontSize": 14,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.wordWrap": "on",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
+  },
+  "editor.suggestSelection": "first",
+  "editor.inlineSuggest.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.rulers": [100],
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+
+  // ── Files ───────────────────────────────────────────────────────────────────
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/.turbo": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/dist/**": true
+  },
+
+  // ── TypeScript ───────────────────────────────────────────────────────────────
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.autoImports": true,
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+
+  // ── Prisma ──────────────────────────────────────────────────────────────────
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma",
+    "editor.formatOnSave": true
+  },
+
+  // ── Tailwind ────────────────────────────────────────────────────────────────
+  "tailwindCSS.experimental.classRegex": [
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+
+  // ── ESLint ──────────────────────────────────────────────────────────────────
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.workingDirectories": [
+    { "directory": "apps/api", "changeProcessCWD": true },
+    { "directory": "apps/web", "changeProcessCWD": true }
+  ],
+
+  // ── REST Client ─────────────────────────────────────────────────────────────
+  "rest-client.environmentVariables": {
+    "$shared": {},
+    "local": {
+      "baseUrl": "http://localhost:4000/api/v1",
+      "token": ""
+    },
+    "production": {
+      "baseUrl": "https://api.jothitraders.com/api/v1",
+      "token": ""
+    }
+  },
+
+  // ── Terminal ─────────────────────────────────────────────────────────────────
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.fontSize": 13,
+
+  // ── Explorer ─────────────────────────────────────────────────────────────────
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js, ${capture}.d.ts, ${capture}.spec.ts, ${capture}.test.ts",
+    "*.tsx": "${capture}.css, ${capture}.module.css, ${capture}.test.tsx, ${capture}.spec.tsx",
+    "package.json": "package-lock.json, pnpm-lock.yaml, yarn.lock, .npmrc, .nvmrc",
+    "tailwind.config.*": "postcss.config.*",
+    "next.config.*": "next-env.d.ts",
+    ".env": ".env.*"
+  },
+
+  // ── Git ──────────────────────────────────────────────────────────────────────
+  "gitlens.hovers.currentLine.over": "line",
+  "git.autofetch": true
+}

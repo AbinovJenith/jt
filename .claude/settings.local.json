@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install:*)",
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Bash(pnpm:*)",
+      "Bash(npm root:*)",
+      "Bash(ls \"$\\(npm root -g\\)/../bin/\")",
+      "Bash(D:\\\\Users\\\\abinov.j\\\\AppData\\\\Roaming\\\\npm\\\\pnpm install:*)",
+      "Bash(export PATH=\"$PATH:/c/Users/abinov.j/AppData/Roaming/npm\")",
+      "Bash(/c/Users/abinov.j/AppData/Roaming/npm/pnpm dev:*)",
+      "Bash(D:/Users/abinov.j/AppData/Roaming/npm/pnpm.cmd dev:*)",
+      "Bash(\"D:/Users/abinov.j/AppData/Roaming/npm/pnpm.cmd\" install:*)",
+      "Bash(D:/Users/abinov.j/AppData/Roaming/npm/pnpm.cmd:*)",
+      "Bash(\"D:/Users/abinov.j/AppData/Roaming/npm/pnpm.cmd\" --filter api run prisma:generate)",
+      "Bash(\"D:/Users/abinov.j/AppData/Roaming/npm/pnpm.cmd\" exec:*)",
+      "Bash(\"/c/Program Files/Docker/Docker/resources/bin/docker.exe\" ps)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Bash(psql --version)",
+      "Bash(/c/Program Files/PostgreSQL/16/bin/psql.exe:*)",
+      "Bash(/c/Program Files/PostgreSQL/16/bin/pg_isready.exe:*)",
+      "Bash(PGPASSWORD=postgres /c/Program Files/PostgreSQL/16/bin/psql.exe:*)",
+      "Bash(PGPASSWORD=postgres \"/c/Program Files/PostgreSQL/16/bin/createdb.exe\" -U postgres -h localhost jothi_traders)",
+      "Bash(\"D:/Users/abinov.j/AppData/Roaming/npm/pnpm.cmd\" --filter api run prisma:migrate)",
+      "Bash(\"D:/Users/abinov.j/AppData/Roaming/npm/pnpm.cmd\" dev:*)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill:*)",
+      "Bash(\"D:/Users/abinov.j/AppData/Roaming/npm/pnpm.cmd\" add:*)"
+    ]
+  }
+}

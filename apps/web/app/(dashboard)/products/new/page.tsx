@@ -1,0 +1,141 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import api from '@/lib/api';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+
+interface VariantDraft {
+  sku: string;
+  name: string;
+}
+
+const inputCls = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+
+export default function NewProductPage() {
+  const router = useRouter();
+  const [form, setForm] = useState({ name: '', categoryId: '', description: '' });
+  const [variants, setVariants] = useState<VariantDraft[]>([{ sku: '', name: '' }]);
+  const [error, setError] = useState('');
+
+  const { data: categories } = useQuery({
+    queryKey: ['categories-flat'],
+    queryFn: () => api.get('/categories').then(r => {
+      const flat: any[] = [];
+      const walk = (cats: any[], depth = 0) => cats?.forEach(c => {
+        flat.push({ ...c, depth });
+        walk(c.children ?? [], depth + 1);
+      });
+      walk(r.data.data);
+      return flat;
+    }),
+  });
+
+  const create = useMutation({
+    mutationFn: () =>
+      api.post('/products', {
+        name: form.name,
+        categoryId: form.categoryId,
+        description: form.description || undefined,
+        variants: variants.filter(v => v.sku && v.name),
+      }),
+    onSuccess: (res) => router.push(`/products/${res.data.data.id}`),
+    onError: (e: Error) => setError(e.message),
+  });
+
+  const updateVariant = (idx: number, field: keyof VariantDraft, value: string) => {
+    setVariants(prev => prev.map((v, i) => i === idx ? { ...v, [field]: value } : v));
+  };
+
+  return (
+    <div className="max-w-2xl space-y-5">
+      <div className="flex items-center gap-3">
+        <button onClick={() => router.back()} className="p-1.5 hover:bg-gray-100 rounded-lg">
+          <ArrowLeft className="w-5 h-5 text-gray-500" />
+        </button>
+        <h1 className="text-xl font-bold text-gray-900">New Product</h1>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+        {/* Basic info */}
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+            <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className={inputCls} placeholder="e.g. LED Bulb 9W" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+            <select value={form.categoryId} onChange={e => setForm(f => ({ ...f, categoryId: e.target.value }))} className={inputCls}>
+              <option value="">Select category...</option>
+              {categories?.map((c: any) => (
+                <option key={c.id} value={c.id}>{'— '.repeat(c.depth)}{c.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} className={`${inputCls} resize-none`} placeholder="Optional product description..." />
+          </div>
+        </div>
+
+        {/* Variants */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-sm font-medium text-gray-700">Variants / SKUs</label>
+            <button
+              onClick={() => setVariants(v => [...v, { sku: '', name: '' }])}
+              className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1 font-medium"
+            >
+              <Plus className="w-4 h-4" />
+              Add Variant
+            </button>
+          </div>
+          <div className="space-y-2">
+            {variants.map((v, idx) => (
+              <div key={idx} className="grid grid-cols-11 gap-2 items-center">
+                <div className="col-span-4">
+                  <input
+                    value={v.sku}
+                    onChange={e => updateVariant(idx, 'sku', e.target.value)}
+                    placeholder="SKU (unique)"
+                    className={inputCls}
+                  />
+                </div>
+                <div className="col-span-6">
+                  <input
+                    value={v.name}
+                    onChange={e => updateVariant(idx, 'name', e.target.value)}
+                    placeholder="Variant name (e.g. 9W Warm White)"
+                    className={inputCls}
+                  />
+                </div>
+                <div className="col-span-1 flex justify-center">
+                  {variants.length > 1 && (
+                    <button onClick={() => setVariants(v => v.filter((_, i) => i !== idx))} className="p-1.5 hover:bg-red-50 rounded text-red-400">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-400 mt-2">You can add more variants and set attributes after creating the product.</p>
+        </div>
+
+        {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
+
+        <div className="flex gap-3 pt-2 border-t border-gray-100">
+          <button type="button" onClick={() => router.back()} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+          <button
+            onClick={() => create.mutate()}
+            disabled={!form.name || !form.categoryId || create.isPending}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          >
+            {create.isPending ? 'Creating...' : 'Create Product'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
