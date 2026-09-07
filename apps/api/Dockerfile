@@ -2,12 +2,12 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-RUN npm install -g pnpm
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/api/package.json ./apps/api/
 
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY apps/api ./apps/api
 
@@ -18,7 +18,7 @@ RUN pnpm --filter api build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-RUN npm install -g pnpm
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 RUN addgroup --system jothi && adduser --system --ingroup jothi jothi
 
 COPY --from=builder /app/node_modules ./node_modules
