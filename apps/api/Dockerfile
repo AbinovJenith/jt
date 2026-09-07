@@ -11,7 +11,7 @@ RUN pnpm install --frozen-lockfile
 
 COPY apps/api ./apps/api
 
-RUN pnpm --filter api prisma generate
+RUN cd apps/api && npx prisma generate --schema=./prisma/schema.prisma
 RUN pnpm --filter api build
 
 # ── Production image ─────────────────────────────────────────────────────────
