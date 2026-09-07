@@ -18,7 +18,7 @@ RUN pnpm --filter api build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+RUN apk add --no-cache openssl
 RUN addgroup --system jothi && adduser --system --ingroup jothi jothi
 
 COPY --from=builder /app/node_modules ./node_modules
@@ -26,8 +26,8 @@ COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
 
-COPY --chown=jothi:jothi apps/api/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
+COPY apps/api/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh && chown -R jothi:jothi /app
 
 USER jothi
 EXPOSE 4000
