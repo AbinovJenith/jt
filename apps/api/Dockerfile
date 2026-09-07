@@ -27,6 +27,9 @@ COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
 
+COPY --chown=jothi:jothi apps/api/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
 USER jothi
 EXPOSE 4000
-CMD ["node", "apps/api/dist/main"]
+CMD ["./entrypoint.sh"]
