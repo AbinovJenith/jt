@@ -198,12 +198,12 @@ export default function ProductDetailPage() {
             <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
               <Package className="w-4 h-4 text-gray-400" />
               <h2 className="text-sm font-semibold text-gray-700">
-                Variants / SKUs ({data.variants?.length ?? 0})
+                Specifications ({data.variants?.length ?? 0})
               </h2>
             </div>
 
             {data.variants?.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-8">No variants</p>
+              <p className="text-sm text-gray-400 text-center py-8">No specifications added</p>
             ) : (
               <div className="divide-y divide-gray-100">
                 {data.variants?.map((variant: any) => (
@@ -211,7 +211,7 @@ export default function ProductDetailPage() {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <p className="font-medium text-gray-900">{variant.name}</p>
-                        <p className="text-xs font-mono text-gray-400">{variant.sku}</p>
+                        <p className="text-xs font-mono text-gray-400">Product Code: {variant.sku}</p>
                       </div>
                       <div className="flex items-center gap-3">
                         {/* Stock */}

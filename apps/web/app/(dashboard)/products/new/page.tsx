@@ -6,9 +6,12 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 
-interface VariantDraft {
+const UNITS = ['kg', 'litre', 'metre', 'units', 'box', 'piece', 'ton', 'gram', 'ml'];
+
+interface SpecDraft {
   sku: string;
-  name: string;
+  qty: string;
+  unit: string;
 }
 
 const inputCls = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -16,7 +19,7 @@ const inputCls = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm foc
 export default function NewProductPage() {
   const router = useRouter();
   const [form, setForm] = useState({ name: '', categoryId: '', description: '' });
-  const [variants, setVariants] = useState<VariantDraft[]>([{ sku: '', name: '' }]);
+  const [specs, setSpecs] = useState<SpecDraft[]>([{ sku: '', qty: '', unit: 'kg' }]);
   const [error, setError] = useState('');
 
   const { data: categories } = useQuery({
@@ -38,14 +41,16 @@ export default function NewProductPage() {
         name: form.name,
         categoryId: form.categoryId,
         description: form.description || undefined,
-        variants: variants.filter(v => v.sku && v.name),
+        variants: specs
+          .filter(s => s.sku && s.qty)
+          .map(s => ({ sku: s.sku, name: `${s.qty} ${s.unit}` })),
       }),
     onSuccess: (res) => router.push(`/products/${res.data.data.id}`),
     onError: (e: Error) => setError(e.message),
   });
 
-  const updateVariant = (idx: number, field: keyof VariantDraft, value: string) => {
-    setVariants(prev => prev.map((v, i) => i === idx ? { ...v, [field]: value } : v));
+  const updateSpec = (idx: number, field: keyof SpecDraft, value: string) => {
+    setSpecs(prev => prev.map((s, i) => i === idx ? { ...s, [field]: value } : s));
   };
 
   return (
@@ -62,7 +67,7 @@ export default function NewProductPage() {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
-            <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className={inputCls} placeholder="e.g. LED Bulb 9W" />
+            <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className={inputCls} placeholder="e.g. Basmati Rice" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
@@ -79,40 +84,51 @@ export default function NewProductPage() {
           </div>
         </div>
 
-        {/* Variants */}
+        {/* Specifications */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-medium text-gray-700">Variants / SKUs</label>
+            <label className="text-sm font-medium text-gray-700">Specifications</label>
             <button
-              onClick={() => setVariants(v => [...v, { sku: '', name: '' }])}
+              onClick={() => setSpecs(s => [...s, { sku: '', qty: '', unit: 'kg' }])}
               className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1 font-medium"
             >
               <Plus className="w-4 h-4" />
-              Add Variant
+              Add Specification
             </button>
           </div>
           <div className="space-y-2">
-            {variants.map((v, idx) => (
-              <div key={idx} className="grid grid-cols-11 gap-2 items-center">
+            {specs.map((s, idx) => (
+              <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                <div className="col-span-3">
+                  <input
+                    value={s.sku}
+                    onChange={e => updateSpec(idx, 'sku', e.target.value)}
+                    placeholder="Product Code"
+                    className={inputCls}
+                  />
+                </div>
                 <div className="col-span-4">
                   <input
-                    value={v.sku}
-                    onChange={e => updateVariant(idx, 'sku', e.target.value)}
-                    placeholder="SKU (unique)"
+                    type="number"
+                    min="0"
+                    value={s.qty}
+                    onChange={e => updateSpec(idx, 'qty', e.target.value)}
+                    placeholder="Quantity"
                     className={inputCls}
                   />
                 </div>
-                <div className="col-span-6">
-                  <input
-                    value={v.name}
-                    onChange={e => updateVariant(idx, 'name', e.target.value)}
-                    placeholder="Variant name (e.g. 9W Warm White)"
+                <div className="col-span-4">
+                  <select
+                    value={s.unit}
+                    onChange={e => updateSpec(idx, 'unit', e.target.value)}
                     className={inputCls}
-                  />
+                  >
+                    {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
+                  </select>
                 </div>
                 <div className="col-span-1 flex justify-center">
-                  {variants.length > 1 && (
-                    <button onClick={() => setVariants(v => v.filter((_, i) => i !== idx))} className="p-1.5 hover:bg-red-50 rounded text-red-400">
+                  {specs.length > 1 && (
+                    <button onClick={() => setSpecs(s => s.filter((_, i) => i !== idx))} className="p-1.5 hover:bg-red-50 rounded text-red-400">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   )}
@@ -120,7 +136,7 @@ export default function NewProductPage() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 mt-2">You can add more variants and set attributes after creating the product.</p>
+          <p className="text-xs text-gray-400 mt-2">You can add more specifications and set attributes after creating the product.</p>
         </div>
 
         {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
